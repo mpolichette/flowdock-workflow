@@ -53,7 +53,7 @@ userToItem = (user) ->
     icon: "./cache/#{user.id}"
     autocomplete: user.name
     uid: user.id
-    arg: "open #{user.id}"
+    arg: "#{user.id}"
 
 downloadAvatar = (user) ->
   userAvatarPath = "#{config.cachePath}/#{user.id}"
