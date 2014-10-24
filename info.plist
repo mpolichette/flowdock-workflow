@@ -40,7 +40,7 @@
 				<key>runningsubtext</key>
 				<string>Looking up users...</string>
 				<key>script</key>
-				<string>/usr/local/bin/node ./index.js "{query}"</string>
+				<string>/usr/local/bin/node ./index.js lookup "{query}"</string>
 				<key>subtext</key>
 				<string>Hi there {query}</string>
 				<key>title</key>

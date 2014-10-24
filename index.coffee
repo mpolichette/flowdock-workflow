@@ -23,12 +23,10 @@ config = require './config'
 # autocomplete: "send"
 # arg: "Cool test Bro!"
 
-
-# Main
-args = process.argv
-[program, filePath, command] = args
-
 s = new Session config.apiToken
+
+initCache = ->
+  fs.mkdirSync config.cachePath unless fs.existsSync config.cachePath
 
 download = (uri, filename) ->
   dfd = q.defer()
@@ -43,7 +41,9 @@ download = (uri, filename) ->
 getUsers = ->
   dfd = q.defer()
   s.get "/users", {}, (err, flow, request) ->
-    dfd.resolve request.body
+    users = request.body
+    promises = (downloadAvatar user for user in users)
+    q.all(promises).then -> dfd.resolve users
   dfd.promise
 
 userToItem = (user) ->
@@ -62,10 +62,31 @@ downloadAvatar = (user) ->
   else
     download user.avatar, userAvatarPath
 
+filterUsers = (users, query) ->
+  return users unless query
+  matches = alfredo.fuzzy query, _.pluck users, 'name'
+  _(users).indexBy('name').pick(matches).values().value()
 
-getUsers().then (users) ->
-  fs.mkdirSync config.cachePath unless fs.existsSync config.cachePath
-  promises = (downloadAvatar user for user in users)
-  q.all(promises).then ->
-    items = _.map users, userToItem
-    alfredo.feedback items
+COMMANDS =
+  lookup: (query) ->
+    getUsers().then (users) ->
+      users = filterUsers users, query
+      items = _.map users, userToItem
+      alfredo.feedback items
+
+  help: (command, query) ->
+    console.log """
+    Usage: node index.js command query
+    Commands:
+      lookup
+      help
+    """
+
+# Main
+[command, query, args...] = process.argv.slice(2)
+initCache()
+
+if COMMANDS[command]?
+  COMMANDS[command](query)
+else
+  COMMANDS.help(command, query)
