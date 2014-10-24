@@ -1,0 +1,24 @@
+{
+  "name": "flowdock-workflow",
+  "repository": "https://github.com/mpolichette/flowdock-workflow.git",
+  "version": "1.0.0",
+  "description": "A workflow for interacting with flowdock",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "flowdock",
+    "alfred"
+  ],
+  "author": "Matt Polichette",
+  "license": "MIT",
+  "dependencies": {
+    "alfredo": "^0.2.0",
+    "coffee-script": "^1.8.0",
+    "flowdock": "^0.9.0",
+    "lodash": "^2.4.1",
+    "q": "^1.0.1",
+    "request": "^2.46.0"
+  }
+}
